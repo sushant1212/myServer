@@ -1,0 +1,28 @@
+services:
+  sushant-website:
+    build: ./website/
+    restart: always  # keep my website alive always
+    networks:
+      sushant-net:
+        ipv4_address: ${IPv4_WEBSITE_ADDRESS}
+        ipv6_address: ${IPv6_WEBSITE_ADDRESS}
+    volumes:
+      - type: bind
+        source: website/src/
+        target: /website/src/
+
+networks:
+  sushant-net:
+    enable_ipv4: true
+    enable_ipv6: true
+    driver: ipvlan
+    driver_opts:
+      parent: ${PARENT_INTERFACE}
+    ipam:
+      config:
+        - subnet: ${IPv6_NETWORK_ADDRESS}/${IPv6_SUBNET_MASK}
+          gateway: ${IPv6_GATEWAY_ADDRESS}
+        - subnet: ${IPv4_NETWORK_ADDRESS}/${IPv4_SUBNET_MASK}
+          gateway: ${IPv4_GATEWAY_ADDRESS}
+    name: sushant-net
+
